@@ -6,11 +6,51 @@
 /*   By: alaaouar <alaaouar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 21:54:12 by alaaouar          #+#    #+#             */
-/*   Updated: 2024/11/16 03:05:37 by alaaouar         ###   ########.fr       */
+/*   Updated: 2024/11/16 22:12:49 by alaaouar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int get_size(t_env *env)
+{
+	int		i;
+	t_env	*tmp;
+
+	i = 0;
+	tmp = env;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	return (i);
+}
+
+char *ft_strjoin_free(char *s1, char *s2, int flag)
+{
+	char *tmp;
+
+	tmp = ft_strjoin(s1, s2);
+	if (s1 && s2 && flag == 2)
+	{
+		free(s1);
+		s1 = NULL;
+		free(s2);
+		s2 = NULL;
+	}
+	else if (s1 && flag == 1)
+	{
+		free(s1);
+		s1 = NULL;
+	}
+	else if (s2 && flag == 0)
+	{
+		free(s2);
+		s2 = NULL;
+	}
+	return (tmp);
+}
 
 void	convert_path_to_arr_norm(t_env *tmp, char **paths, int *i)
 {
@@ -38,7 +78,7 @@ char	**convert_path_to_array(t_env *env)
 
 	tmp = env;
 	i = get_size(tmp);
-	paths = (char **)ft_malloc(sizeof(char *) * (i + 1));
+	paths = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!paths)
 		return (NULL);
 	tmp = env;
@@ -61,7 +101,7 @@ t_env	*set_env(char **env)
 	head = NULL;
 	while (env[i])
 	{
-		new = ft_malloc(sizeof(t_env));
+		new = malloc(sizeof(t_env));
 		if (!new)
 			return (free_env(head), NULL);
 		if (copy_env(env[i], new))
@@ -130,10 +170,10 @@ int	copy_env(char *env, t_env *new)
 	j = -1;
 	while (env[i] && env[i] != '=')
 		i++;
-	new->key = ft_malloc(sizeof(char) * (i + 1));
+	new->key = malloc(sizeof(char) * (i + 1));
 	if (!new->key)
 		return (1);
-	new->value = ft_malloc(sizeof(char) * (ft_strlen(env) - i));
+	new->value = malloc(sizeof(char) * (ft_strlen(env) - i));
 	if (!new->value)
 		return (ft_free(new->key), 1);
 	while (++j < i)

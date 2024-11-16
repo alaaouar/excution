@@ -6,7 +6,7 @@
 /*   By: alaaouar <alaaouar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 01:31:20 by alaaouar          #+#    #+#             */
-/*   Updated: 2024/11/16 03:13:03 by alaaouar         ###   ########.fr       */
+/*   Updated: 2024/11/16 21:19:02 by alaaouar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int check_for_builtin(char *cmd)
         return (1);
     return (0);
 }
+
 void    redir_error(t_redir *redi)
 {
     ft_putstr_fd("minishell: ", 2);
@@ -88,5 +89,6 @@ void    single_cmd(t_minishell *mini)
     pid = fork();
     signal(SIGINT, sig_handler);
     signal(SIGQUIT, sig_handler2);
+    one_command(pid, mini);
     
 }

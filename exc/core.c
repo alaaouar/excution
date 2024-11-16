@@ -6,7 +6,7 @@
 /*   By: alaaouar <alaaouar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:37:48 by alaaouar          #+#    #+#             */
-/*   Updated: 2024/11/14 01:46:58 by alaaouar         ###   ########.fr       */
+/*   Updated: 2024/11/16 21:56:56 by alaaouar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,29 +83,29 @@ void    minishell_unset(t_cmd *cmd)
     }
 }
 
-void    excute(t_cmd *cmd)
+void    excute(t_minishell *mini)
 {
     t_env *env;
     
-    env = set_env(cmd->env);
-    if (cmd == NULL || cmd->av == NULL || cmd->av[0] == NULL)
+    env = set_env(mini->cmd->env);
+    if (mini->cmd == NULL || mini->cmd->av == NULL || mini->cmd->av[0] == NULL)
     {
         fprintf(stderr, "Invalid command\n");
         return;
     }
-    if (ft_strncmp(cmd->av[0], "pwd", 3) == 0)
+    if (ft_strncmp(mini->cmd->av[0], "pwd", 3) == 0)
         pwd_cmd();
-    else if (ft_strncmp(cmd->av[0], "echo", 4) == 0)
-        minishell_echo(cmd);
-    else if (ft_strncmp(cmd->av[0], "cd", 2) == 0)
-        minishell_cd(cmd);
-    else if (ft_strncmp(cmd->av[0], "env", 3) == 0)
-        minishell_env(cmd);
-    else if (ft_strncmp(cmd->av[0], "unset", 5) == 0)
-        minishell_unset(cmd);
-    else if (ft_strncmp(cmd->av[0], "export", 6) == 0)
-        minishell_export(cmd, env);
+    else if (ft_strncmp(mini->cmd->av[0], "echo", 4) == 0)
+        minishell_echo(mini->cmd);
+    else if (ft_strncmp(mini->cmd->av[0], "cd", 2) == 0)
+        minishell_cd(mini->cmd);
+    else if (ft_strncmp(mini->cmd->av[0], "env", 3) == 0)
+        minishell_env(mini->cmd);
+    else if (ft_strncmp(mini->cmd->av[0], "unset", 5) == 0)
+        minishell_unset(mini->cmd);
     else
-        single_cmd(cmd);
-    cmd = cmd->next;
+        single_cmd(mini);
+    // else if (ft_strncmp(mini->cmd->av[0], "export", 6) == 0)
+    //     minishell_export(cmd, env);
+    mini->cmd = mini->cmd->next;
 }

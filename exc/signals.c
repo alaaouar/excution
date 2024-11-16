@@ -6,7 +6,7 @@
 /*   By: alaaouar <alaaouar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 02:37:07 by alaaouar          #+#    #+#             */
-/*   Updated: 2024/11/16 02:39:00 by alaaouar         ###   ########.fr       */
+/*   Updated: 2024/11/16 22:17:20 by alaaouar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void    sig_handler(int sig)
 {
-    	if (sig == SIGINT && sigchild)
+	if (sig == SIGINT && sigchild)
 	{
 		printf("\n");
 		rl_on_new_line();
