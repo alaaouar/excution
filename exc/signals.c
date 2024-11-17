@@ -6,12 +6,14 @@
 /*   By: alaaouar <alaaouar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 02:37:07 by alaaouar          #+#    #+#             */
-/*   Updated: 2024/11/16 22:17:20 by alaaouar         ###   ########.fr       */
+/*   Updated: 2024/11/17 20:25:07 by alaaouar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../include/minishell.h"
+
+int sigchild = 0;
 
 void    sig_handler(int sig)
 {
@@ -31,9 +33,10 @@ void    sig_handler(int sig)
 	}
 }
 
-void    sig_handler2(int sigq)
+void    sig_handler2(int sig)
 {
-	if (sigq == SIGQUIT && sigchild)
+	// write(1, "here", 4);
+	if (sig == SIGQUIT && sigchild)
 	{
 		printf("Quit (core dumped)\n");
 		rl_on_new_line();

@@ -6,13 +6,13 @@
 /*   By: alaaouar <alaaouar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 21:17:02 by alaaouar          #+#    #+#             */
-/*   Updated: 2024/11/16 21:17:19 by alaaouar         ###   ########.fr       */
+/*   Updated: 2024/11/17 03:25:38 by alaaouar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void    ft_putstr_fd(char *s, int fd)
-{
-    write(fd, s, ft_strlen(s));
-}
+// void    ft_putstr_fd(char *s, int fd)
+// {
+//     write(fd, s, ft_strlen(s));
+// }

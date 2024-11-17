@@ -6,7 +6,7 @@
 /*   By: alaaouar <alaaouar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 01:31:20 by alaaouar          #+#    #+#             */
-/*   Updated: 2024/11/16 21:19:02 by alaaouar         ###   ########.fr       */
+/*   Updated: 2024/11/17 19:56:39 by alaaouar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 int check_for_builtin(char *cmd)
 {
-    if (!ft_strcmp(cmd, "echo"))
+    if (!ft_strncmp(cmd, "echo", 4))
         return (1);
-    if (!ft_strcmp(cmd, "cd"))
+    if (!ft_strncmp(cmd, "cd", 2))
         return (1);
-    if (!ft_strcmp(cmd, "pwd"))
+    if (!ft_strncmp(cmd, "pwd", 3))
         return (1);
-    if (!ft_strcmp(cmd, "export"))
+    if (!ft_strncmp(cmd, "export", 6))
         return (1);
-    if (!ft_strcmp(cmd, "unset"))
+    if (!ft_strncmp(cmd, "unset", 5))
         return (1);
-    if (!ft_strcmp(cmd, "env"))
+    if (!ft_strncmp(cmd, "env", 3))
         return (1);
-    if (!ft_strcmp(cmd, "exit"))
+    if (!ft_strncmp(cmd, "exit", 4))
         return (1);
     return (0);
 }
@@ -40,55 +40,63 @@ void    redir_error(t_redir *redi)
 	else
 		ft_putstr_fd(": No such file or directory\n", 2);
 }
-void    test_redirections(t_minishell *mini)
-{
-    t_redir *tmp;
-    int     ret;
+// void    test_redirections(t_minishell *mini)
+// {
+//     t_redir *tmp;
+//     int     ret;
 
-    ret = 0;
-    tmp = mini->cmd->redirections;
-    while(tmp)
-    {
-        if (tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
-        {
-            redir_error(tmp);
-            ret = 1;
-        }
-        tmp = tmp->next;
-    }
+//     ret = 0;
+//     tmp = mini->cmd->redirections;
+//     while(tmp)
+//     {
+//         if (tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
+//         {
+//             redir_error(tmp);
+//             ret = 1;
+//         }
+//         tmp = tmp->next;
+//     }
+// }
+
+int	duping(t_redir *redir, t_exc *exc)
+{
+	exc->fd = open(redir->file, O_RDONLY);
+	if (exc->fd == -1)
+	{
+		return (1);
+	}
+    return (0);
 }
 
 void    one_command(pid_t pid,t_minishell *mini)
 {
-    if (pid == -1)
-    {
-        perror("fork");
-        // exit(EXIT_FAILURE);
-    }
+    ft_fdinit(mini);
+	if (pid == -1)
+	{
+		perror("fork");
+		// exit(EXIT_FAILURE);
+	}
     if (pid == 0)
     {
         if (mini->cmd->redirections->type == REDIR_IN)
-            dup2(mini->cmd->redirections->file, 0);
+            dup2(mini->exc->fd, 0);
         if (mini->cmd->redirections->type == REDIR_OUT)
-            dup2(mini->cmd->redirections->file, 1);
+            dup2(mini->exc->fd, 1);
+        
         // test_redirections(mini);
-        
-        
     }
 }
 
 void    single_cmd(t_minishell *mini)
 {
     pid_t   pid;
-    int     status;
 
     pid = fork();
     sigchild = 0;
     if (check_for_builtin(mini->cmd->av[0]))
         return ;
     pid = fork();
-    signal(SIGINT, sig_handler);
-    signal(SIGQUIT, sig_handler2);
     one_command(pid, mini);
     
 }
+

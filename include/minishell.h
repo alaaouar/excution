@@ -16,11 +16,8 @@
 # define LIGHT_BLUE "\x1B[1;34m"
 # define RESET "\x1B[0m"
 
-
 extern int sigchild;
 
-
-/////
 typedef enum s_types
 {
 	CMD,
@@ -82,6 +79,8 @@ typedef struct s_cmd // each node is a command without pip so if moving to next 
 typedef struct s_exc
 {
 	int num_cmds;
+	int fd;
+	int i;
 }	t_exc;
 
 typedef struct s_minishell
@@ -143,5 +142,7 @@ t_redir *init_redirection(t_types type, char *file);
 
 t_cmd *handle_pipe(t_cmd *curr_cmd, char **env);
 t_cmd *init_cmd(char **env);
+int    ft_fdinit(t_minishell*mini);
+
 
 #endif

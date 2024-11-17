@@ -118,6 +118,9 @@ int	main(int argc, char **argv, char **env)
 {
 	t_minishell	minishell;
 
+    sigchild = 0;
+    signal(SIGINT, sig_handler);
+	signal(SIGQUIT, SIG_IGN);
 	(void)argc;
 	(void)argv;
 	minishell_loop(&minishell, env);

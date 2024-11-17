@@ -6,7 +6,7 @@
 /*   By: alaaouar <alaaouar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 03:14:35 by alaaouar          #+#    #+#             */
-/*   Updated: 2024/11/16 22:03:28 by alaaouar         ###   ########.fr       */
+/*   Updated: 2024/11/17 19:51:31 by alaaouar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,48 +27,55 @@ int cmd_count(t_cmd *cmd)
     return (count);
 }
 
-void fill_data_hold(t_minishell *mini)
+int    ft_fdinit(t_minishell*mini)
 {
-    data_hold()->line = mini->line; 
-    data_hold()->env = mini->env;
-    data_hold()->lexer = mini->lexer;
-    data_hold()->cmd = mini->cmd;
-    data_hold()->exc = mini->exc;
-}
+    t_redir *tmp;
 
-void print_data_hold(void)
-{
-    t_minishell *mini = data_hold();
 
-    if (mini == NULL)
+    tmp = mini->cmd->redirections;
+    while (tmp)
     {
-        printf("data_hold is NULL\n");
-        return;
-    }
-
-    printf("line: %s\n", mini->line ? mini->line : "NULL");
-    if (mini->env)
-    {
-        printf("env:\n");
-        for (char **env = mini->env; *env != NULL; env++)
+        if (tmp->type == REDIR_IN)
         {
-            printf("  %s\n", *env);
+            mini->exc->fd = open(tmp->file, O_RDONLY);
+            if (mini->exc->fd == -1)
+            {
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(tmp->file, 2);
+                if (!access(tmp->file, F_OK) && access(tmp->file, X_OK) == -1)
+                    ft_putstr_fd(": Permission denied\n", 2);
+                else
+                    ft_putstr_fd(": No such file or directory\n", 2);
+                return (1);
+            }
         }
+        else if (tmp->type == REDIR_OUT)
+        {
+            mini->exc->fd = open(tmp->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (mini->exc->fd == -1)
+            {
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(tmp->file, 2);
+                if (!access(tmp->file, F_OK) && access(tmp->file, X_OK) == -1)
+                    ft_putstr_fd(": Permission denied\n", 2);
+                else
+                    ft_putstr_fd(": No such file or directory\n", 2);
+                return (1);
+            }
+        }
+        tmp = tmp->next;
     }
-    else
-    {
-        printf("env: NULL\n");
-    }
-    printf("lexer: %p\n", (void *)mini->lexer);
-    printf("cmd: %p\n", (void *)mini->cmd);
-    printf("exc: %p\n", (void *)mini->exc);
+    return (0);
 }
+
 
 int main_excuter(t_minishell *mini)
 {
-    fill_data_hold(mini);
-    print_data_hold();
-    if ((mini->exc->num_cmds = cmd_count(mini->cmd)) == 1)
+    int nm_cmd;
+
+    nm_cmd = cmd_count(mini->cmd); 
+    ft_fdinit(mini);
+    if (nm_cmd== 1)
     {
         single_cmd(mini);
         return (1);
@@ -78,13 +85,4 @@ int main_excuter(t_minishell *mini)
         execute_cmds(mini->cmd, mini->env);
         return (1);
     }
-}
-
-t_minishell *data_hold(void)
-{
-    static t_minishell *mini = NULL;
-
-    if (!mini)
-        mini = malloc(sizeof(t_minishell));
-    return (mini);
 }
